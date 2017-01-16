@@ -60,6 +60,10 @@ EXAMPLES = '''
     name: nginx,httpd
 '''
 
+ANSIBLE_METADATA = {'status': ['preview'],
+                    'supported_by': 'community',
+                    'version': '1.0'}
+
 def is_installed(packages):
     rpmdb_ts = rpm.TransactionSet()
     existing_packages = []
