@@ -66,7 +66,7 @@ EXAMPLES = '''
 import rpm
 
 
-def is_installed(packages):
+def get_from_rpmdb(packages):
     rpmdb_ts = rpm.TransactionSet()
     existing_packages = []
     missing_packages = []
@@ -86,7 +86,7 @@ def check_rpms(module, packages, state):
     result['changed'] = False
     result['rc'] = 0
     if state == 'installed':
-        existing_pkg_names, missing_pkg_names = is_installed(packages)
+        existing_pkg_names, missing_pkg_names = get_from_rpmdb(packages)
         if missing_pkg_names:
             module.fail_json(msg="No RPMs matching '%s' found on system" % ", ".join(missing_pkg_names))
         if existing_pkg_names:
