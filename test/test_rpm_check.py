@@ -4,7 +4,8 @@ import rpm_check
 
 
 rpmdb = [{'name': 'python', 'version': '2.7', 'release': '1', 'arch': 'x86_64'},
-         {'name': 'kernel', 'version': '4.7', 'release': '1', 'arch': 'x86_64'}]
+         {'name': 'glibc', 'version': '3.7', 'release': '1', 'arch': 'x86_64'},
+         {'name': 'glibc', 'version': '3.7', 'release': '1', 'arch': 'i686'}]
 
 
 class RpmCheckTest(unittest.TestCase):
@@ -12,8 +13,8 @@ class RpmCheckTest(unittest.TestCase):
     @patch("rpm.TransactionSet.dbMatch", Mock(return_value = iter(rpmdb)))
     def test_pkg_is_installed(self):
        '''Returns list of installed packages'''
-       existing_pkgs, missing_pkgs = rpm_check.get_from_rpmdb(["python", "kernel"])
-       self.assertEqual(existing_pkgs, ['python-2.7-1-x86_64', 'kernel-4.7-1-x86_64'])
+       existing_pkgs, missing_pkgs = rpm_check.get_from_rpmdb(["python", "glibc"])
+       self.assertEqual(existing_pkgs, ['python-2.7-1-x86_64', 'glibc-3.7-1-x86_64', 'glibc-3.7-1-i686'])
 
     @patch("rpm.TransactionSet.dbMatch", Mock(return_value = None))
     def test_pkg_is_not_installed(self):

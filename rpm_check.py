@@ -70,13 +70,13 @@ def get_from_rpmdb(packages):
     rpmdb_ts = rpm.TransactionSet()
     existing_packages = []
     missing_packages = []
-    for p in packages:
-        installed_pkgs = rpmdb_ts.dbMatch('name', p)
+    for pkg_name in packages:
+        installed_pkgs = rpmdb_ts.dbMatch('name', pkg_name)
         if not installed_pkgs:
-            missing_packages.append(p)
+            missing_packages.append(pkg_name)
         else:
-            pkg = installed_pkgs.next()
-            existing_packages.append("%s-%s-%s-%s" % (pkg['name'], pkg['version'], pkg['release'], pkg['arch']))
+            for pkg in installed_pkgs:
+                existing_packages.append("%s-%s-%s-%s" % (pkg['name'], pkg['version'], pkg['release'], pkg['arch']))
     return existing_packages, missing_packages
 
 def check_rpms(module, packages, state):
@@ -86,11 +86,10 @@ def check_rpms(module, packages, state):
     result['changed'] = False
     result['rc'] = 0
     if state == 'installed':
-        existing_pkg_names, missing_pkg_names = get_from_rpmdb(packages)
-        if missing_pkg_names:
-            module.fail_json(msg="No RPMs matching '%s' found on system" % ", ".join(missing_pkg_names))
-        if existing_pkg_names:
-            result['results'] = existing_pkg_names
+        existing_pkgs, missing_pkgs = get_from_rpmdb(packages)
+        if missing_pkgs:
+            module.fail_json(msg="No RPMs matching '%s' found on system" % ", ".join(missing_pkgs))
+        result['results'] = existing_pkgs
     return result
 
 def main():
